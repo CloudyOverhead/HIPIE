@@ -15,7 +15,9 @@ assert torch_ver >= [1, 8], "Requires PyTorch >= 1.8"
 
 
 def get_version():
-    init_py_path = path.join(path.abspath(path.dirname(__file__)), "detectron2", "__init__.py")
+    init_py_path = path.join(
+        path.abspath(path.dirname(__file__)), "detectron2", "__init__.py"
+    )
     init_py = open(init_py_path, "r").readlines()
     version_line = [l.strip() for l in init_py if l.startswith("__version__")][0]
     version = version_line.split("=")[-1].strip().strip("'\"")
@@ -63,9 +65,9 @@ def get_extensions():
     extra_compile_args = {"cxx": []}
     define_macros = []
 
-    if (torch.cuda.is_available() and ((CUDA_HOME is not None) or is_rocm_pytorch)) or os.getenv(
-        "FORCE_CUDA", "0"
-    ) == "1":
+    if (
+        torch.cuda.is_available() and ((CUDA_HOME is not None) or is_rocm_pytorch)
+    ) or os.getenv("FORCE_CUDA", "0") == "1":
         extension = CUDAExtension
         sources += source_cuda
 
@@ -77,6 +79,7 @@ def get_extensions():
                 "-D__CUDA_NO_HALF_OPERATORS__",
                 "-D__CUDA_NO_HALF_CONVERSIONS__",
                 "-D__CUDA_NO_HALF2_OPERATORS__",
+                "-DWITH_CUDA",
             ]
         else:
             define_macros += [("WITH_HIP", None)]
@@ -140,7 +143,6 @@ def get_model_zoo_configs() -> List[str]:
 # to detectron2's core functionalities, we install them under detectron2.projects
 PROJECTS = {
     "detectron2.projects.hipie": "projects/HIPIE/hipie",
-
 }
 
 setup(
@@ -160,7 +162,7 @@ setup(
         # To tell if a package is pure-python, go to https://pypi.org/project/{name}/#files
         "Pillow>=7.1",  # or use pillow-simd for better performance
         "matplotlib",  # TODO move it to optional after we add opencv visualization
-       # "pycocotools>=2.0.2",  # corresponds to https://github.com/ppwwyyxx/cocoapi
+        # "pycocotools>=2.0.2",  # corresponds to https://github.com/ppwwyyxx/cocoapi
         # Do not add opencv here. Just like pytorch, user should install
         # opencv themselves, preferrably by OS's package manager, or by
         # choosing the proper pypi package name at https://github.com/skvark/opencv-python
@@ -183,8 +185,8 @@ setup(
         "hydra-core>=1.1",
         "black==21.4b2",
         "scipy>1.5.1",
-        'fairscale',
-        'diffusers',
+        "fairscale",
+        "diffusers",
         "einops",
         "timm",
         "jpeg4py",
@@ -194,9 +196,8 @@ setup(
         "transformers",
         "tikzplotlib",
         "motmetrics",
-        "shapely==1.7.1",
+        "shapely>=1.7.1",
         "open-clip-torch==2.0.2",
-        
         # If a new dependency is required at import time (in addition to runtime), it
         # probably needs to exist in docs/requirements.txt, or as a mock in docs/conf.py
     ],
